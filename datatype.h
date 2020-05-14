@@ -42,4 +42,9 @@ typedef struct student{
     Info *info;             //入校信息
 }student;
 
+//定义系统用户
+typedef struct user{
+    char *name;             //系统用户名
+    char *password;         //用户密码
+};
 #endif //INC_514_DATATYPE_H
