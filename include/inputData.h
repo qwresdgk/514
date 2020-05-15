@@ -5,14 +5,19 @@
 #ifndef INC_514_INPUTDATA_H
 #define INC_514_INPUTDATA_H
 
-int stuBase(Student * newStu){
+#include <zconf.h>
+#include <libnet.h>
+#include "utils.h"
+#include "datatype.h"
+
+static int stuBase(Student * newStu){
     char *desc[]= {"学生学号","姓名","身份证号","学院","学生类型","专业"};
     char *arg[]={newStu->stuId,newStu->name,newStu->personalId,newStu->school,newStu->major,newStu->stuType};
     int flag = inputMultiString(arg,6,desc);
     return flag;
 }
 
-int stuTrans(Student * newStu){
+static int stuTrans(Student * newStu){
     int tranNum = 0;
     inputInt(&tranNum,"路程中的换乘次数");
 
@@ -24,7 +29,7 @@ int stuTrans(Student * newStu){
     return tranNum;
 }
 
-int stuOthers(Student * newStu){
+static int stuOthers(Student * newStu){
     int otherNum = 0;
     inputInt(&otherNum,"你所接触人员个数");
 
@@ -36,7 +41,7 @@ int stuOthers(Student * newStu){
     return otherNum;
 }
 
-int stuNow(Student * newStu){
+static int stuNow(Student * newStu){
     inputFloat(&newStu->info->temperature,"该生入校时的体温");
     char *arg[]={newStu->info->history,newStu->info->flag,newStu->info->time};
     char *desc[]={"病史","是否有发烧症状","入校时间"};
@@ -45,15 +50,26 @@ int stuNow(Student * newStu){
 }
 
 int addStu(){
+    if(0!=access(SCHOOLFOLDERS,W_OK)){
+        mkdir(SCHOOLFOLDERS,S_IRWXU);
+    }
+
     Student newStu;
     stuBase(&newStu);
-    int tranNum = stuTrans(&newStu);
-    int otherNum = stuOthers(&newStu);
+    stuTrans(&newStu);
+    stuOthers(&newStu);
     stuNow(&newStu);
 
     FILE *fp;
-    char filename[20]=SCHOOLFOLDERS;
-    strcat(filename,(newStu.school));
+
+    int lenOfName = 0;
+    for (; newStu.school[lenOfName]!='\0'; ++lenOfName) {}
+    int length = sizeof(SCHOOLFOLDERS)+lenOfName;
+    char *filename = (char *)malloc(sizeof(char)*length);
+    *filename='\0';
+    strcat(filename,SCHOOLFOLDERS);
+    strcat(filename,newStu.school);
+
     fp = fopen(filename,"ab");
     if (fp == NULL)
         fp = fopen(filename,"wb");

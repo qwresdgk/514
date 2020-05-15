@@ -4,7 +4,7 @@
 
 int login(){
     //打开系统用户密码文件
-    return 1;
+//    return 1;
     FILE *fp;
     fp = fopen(PASSFILE,"r");
     if (fp == NULL){

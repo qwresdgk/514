@@ -3,33 +3,22 @@
 #define PASSFILE "./data/shadow"      //设定系统用户信息存储位置
 
 #include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <dirent.h>
-#include <zconf.h>
-#include <libnet.h>
-#include "include/datatype.h"
-#include "include/utils.h"
 #include "include/inputData.h"
 #include "include/login.h"
 #include "include/sort.h"
-#include "search.h"
-
-
-
+#include "include/search.h"
 
 void modify(){}
 void show(){}
 
 int main() {
-    int order = 0;
-
     printf("Hello, World!\n");
     int loginStat = 0;
     do {
         loginStat = login();
     }while (loginStat==0);
 
+    int order = 0;
     do {
         printf("####################################\n");
         printf("#              1.录入               #\n");
@@ -38,30 +27,25 @@ int main() {
         printf("#              4.修改               #\n");
         printf("#              5.显示               #\n");
         printf("####################################\n");
-        int flag = 0;
+
+        order = 0;
         do {
-            if(1 == scanf("%d",&order))
-                flag = 1;
-            while (getchar()!='\n');
-        }while (flag==0);
-        if (order<=0)
-            loginStat=0;
-        else{
-            switch (order) {
-                case 1:
-                    addStu();
-                    break;
-                case 2: sort();
-                    break;
-//                case 3: search();
-                    break;
-                case 4: modify();
-                    break;
-                case 5: show();
-                    break;
-                default:
-                    printf("你输入的指令有误,请重新输入\n");
-            }
+            order=menuInput();
+        }while (order<1||order>5);
+        switch (order) {
+            case 1:
+                addStu();
+                break;
+            case 2: sort();
+                break;
+            case 3: search();
+                break;
+            case 4: modify();
+                break;
+            case 5: show();
+                break;
+            default:
+                printf("你输入的指令有误,请重新输入\n");
         }
     }while (loginStat==1);
     return 0;
